@@ -181,7 +181,7 @@ struct XOButton: View {
                 
                 
             }
-            else if counter == 9{
+            else if counter == 9 && winner == ""{
                 
                 winner = "Tie!!"
                 

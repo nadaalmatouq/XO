@@ -42,39 +42,48 @@ struct ContentView: View {
         
         
         
-            VStack(alignment: .center){
-         
+        ZStack {
+            Image("xo-iphone").resizable().scaledToFill()
+           
+            
+            VStack{
+             
                 
-                Text(winner).foregroundColor(.blue).font(.system(size: 50, weight: .bold, design: .rounded))
-                Text("\(currentPlayer) turn").foregroundColor(.black).font(.system(size: 50, weight: .bold, design: .rounded))
+                Text(winner).foregroundColor(.red).font(.system(size: 50, weight: .bold, design: .rounded)).background(Color.white)
                 
+                Text("\(currentPlayer) turn").foregroundColor(.black).font(.system(size: 50, weight: .bold, design: .rounded)).background(Color.white).padding(10)
                 
-                Grid(fields: $fields, currentPlayer: $currentPlayer, counter: $counter, winner: $winner)
-                
-                if winner != ""{
+                  
+                    Grid(fields: $fields, currentPlayer: $currentPlayer, counter: $counter, winner: $winner)
                     
                     
-                    Button(action: {
-                          //resatrt
-                       
-                          
-                        self.restartGame()
-                          
-                          
-                      }){
-                          
-                        Text("Restart Game?").foregroundColor(.blue).font(.system(size: 40, design: .rounded)).padding()
-                          
-                      }
+                   
+                     
+                    if winner != ""{
+                        
+                        
+                        
+                        Button(action: {
+                              //resatrt
+                           
+                              
+                            self.restartGame()
+                              
+                              
+                          }){
+                              
+                            Text("Restart Game?").foregroundColor(.blue).font(.system(size: 40, design: .rounded)).shadow(radius: 12).background(Color.white).offset(y:20)
+                              
+                          }
+                        
+                    }
+                        
+                        
                     
                     
                     
-                    
-                }
-                
-                
-                
-        }//VStack
+            }//VStack
+        }.edgesIgnoringSafeArea(.all)//ZStack
         
     }
     
@@ -99,39 +108,56 @@ struct Grid: View {
     @Binding var winner: String
     
     var body: some View {
-        VStack(alignment: .center, spacing: 20) {
+        VStack(spacing: 20) {
             ForEach(0 ..< 3) { r in
                 
-                HStack(alignment: .center, spacing: 20){
+                HStack(spacing: 20){
                     ForEach(0 ..< 3) { c in
                         
-                        Button(action: {
-                            
-                            
-                            
-                            if self.fields[r][c].enabled{
-                                self.fields[r][c].text = self.currentPlayer
-                                self.currentPlayer = self.currentPlayer == "X" ? "O" : "X"
-                                self.fields[r][c].enabled = false
-                                
-                                self.counter += 1
-                                self.checkWinners()
-                            }
-                            
-                        }){
-                            
-                            
-                            Text(self.fields[r][c].text).frame(width: 100, height: 100).foregroundColor(.white).font(.system(size: 50, weight: .bold, design: .rounded)).background(Color.blue)
-                            
-                            
-                        }
+                        XOButton(fields: self.$fields, currentPlayer: self.$currentPlayer, counter: self.$counter, winner: self.$winner, r: r, c: c)
                     }//H forEach
                 }//HStack
             }//vertical forEach
-        }//Vstack
+        }.offset(x: -7)//Vstack
     }
     
-     func checkWinners(){
+     
+    
+}
+
+struct XOButton: View {
+    
+       @Binding var fields : [[Field]]
+       @Binding var currentPlayer: String
+       @Binding var counter: Int
+       @Binding var winner: String
+       var r: Int
+        var c: Int
+    var body: some View {
+        Button(action: {
+            
+            
+            
+            if self.fields[self.r][self.c].enabled{
+                self.fields[self.r][self.c].text = self.currentPlayer
+                self.currentPlayer = self.currentPlayer == "X" ? "O" : "X"
+                self.fields[self.r][self.c].enabled = false
+                
+                self.counter += 1
+                self.checkWinners()
+            }
+            
+        }){
+            
+            
+            Text(self.fields[r][c].text).frame(width: 100, height: 100).foregroundColor(.white).font(.system(size: 50, weight: .bold, design: .rounded)).background(Color.blue).shadow(radius: 12)
+            
+            
+        }
+    }
+    
+    
+    func checkWinners(){
             
             
             func checkWinner(p: String){
@@ -170,5 +196,4 @@ struct Grid: View {
         
         
     }
-    
 }
